@@ -92,14 +92,14 @@ const handleTimeChange = (id: string, key: TimeKey, time: string) => {
 </script>
 
 <template>
-  <Card>
+  <Card v-if="data">
     <CardHeader>
       <CardTitle>Availability</CardTitle>
       <CardDescription>
         In this section you can manage your availability.
       </CardDescription>
     </CardHeader>
-    <form @submit.prevent="updateAvailabilityAction" v-if="data">
+    <form @submit.prevent="updateAvailabilityAction">
       <CardContent class="flex flex-col gap-y-4">
         <div
           class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 items-center gap-4"
@@ -163,4 +163,5 @@ const handleTimeChange = (id: string, key: TimeKey, time: string) => {
       </CardFooter>
     </form>
   </Card>
+  <Loader v-else />
 </template>

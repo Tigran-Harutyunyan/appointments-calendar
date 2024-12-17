@@ -18,4 +18,5 @@ const { data } = useFetch<profileType>("/api/profile");
     :fullName="data?.name"
     :profileImage="data?.image || ''"
   />
+  <Loader v-else />
 </template>
