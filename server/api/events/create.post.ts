@@ -41,8 +41,6 @@ export default defineEventHandler(async (event) => {
             async: true,
         });
 
-        console.log(submission)
-
         if (submission.status !== "success") {
             return submission.reply();
         }
