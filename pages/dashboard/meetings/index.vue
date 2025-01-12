@@ -1,5 +1,8 @@
 <script setup lang="ts">
 definePageMeta({ layout: "dashboard" });
+useHead({
+  title: "Scheduler | Meetings",
+});
 import { toast } from "vue-sonner";
 import EmptyState from "@/components/dashboard/EmptyState.vue";
 import {
@@ -14,7 +17,6 @@ import { format, fromUnixTime } from "date-fns";
 import { Video } from "lucide-vue-next";
 import { type meetingsResponse } from "@/types";
 import ConfirmDialog from "@/components/ConfirmDialog.vue";
-import { toast } from "vue-sonner";
 
 const confirm = useTemplateRef<InstanceType<typeof ConfirmDialog> | null>(
   "confirm-dialog"

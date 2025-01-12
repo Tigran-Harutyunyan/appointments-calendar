@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import SettingsForm from "@/components/dashboard/SettingsForm.vue";
 definePageMeta({ layout: "dashboard" });
+useHead({
+  title: "Scheduler | Settings",
+});
 
 type profileType = {
   email: string;

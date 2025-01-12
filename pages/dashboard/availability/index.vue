@@ -1,6 +1,8 @@
 <script setup lang="ts">
 definePageMeta({ layout: "dashboard" });
-
+useHead({
+  title: "Scheduler | Availability",
+});
 import { toast } from "vue-sonner";
 import { times } from "@/lib/times";
 import {

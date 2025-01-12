@@ -1,5 +1,8 @@
 <script setup lang="ts">
 definePageMeta({ layout: "dashboard" });
+useHead({
+  title: "Scheduler | New Event",
+});
 import { ref } from "vue";
 import { toast } from "vue-sonner";
 import { type EventPayloadType } from "@/types";

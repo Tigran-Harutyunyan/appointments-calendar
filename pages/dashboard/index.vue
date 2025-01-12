@@ -1,5 +1,8 @@
 <script setup lang="ts">
 definePageMeta({ layout: "dashboard" });
+useHead({
+  title: "Scheduler | Event types",
+});
 import { Button } from "@/components/ui/button";
 import { ExternalLink, Pen, Settings, Trash, Users2 } from "lucide-vue-next";
 import { toast } from "vue-sonner";
@@ -36,12 +39,14 @@ const showConfirm = async (id: string) => {
       method: "DELETE",
     });
 
-    if (response?.id) {
+    if (response && "id" in response) {
       toast.success("Event deleted");
       refresh();
     }
   } catch (error) {
-    toast.error(error);
+    toast.error(
+      error instanceof Error ? error.message : "An unexpected error occurred."
+    );
   }
 };
 </script>
@@ -50,7 +55,7 @@ const showConfirm = async (id: string) => {
   <ConfirmDialog ref="confirm-dialog" />
   <Loader v-if="status === 'pending'" />
   <template v-else>
-    <div class="flex items-center justify-between px-2">
+    <div class="flex items-center justify-between px-2 max-w-[1200px]">
       <div class="sm:grid gap-1 hidden">
         <h1 class="font-heading text-3xl md:text-4xl">Event Types</h1>
         <p class="text-lg text-muted-foreground">
@@ -58,7 +63,7 @@ const showConfirm = async (id: string) => {
         </p>
       </div>
       <Button as-child>
-        <NuxtLink href="/dashboard/new">Create New Event</NuxtLink>
+        <NuxtLink to="/dashboard/new">Create New Event</NuxtLink>
       </Button>
     </div>
     <EmptyState
@@ -67,8 +72,12 @@ const showConfirm = async (id: string) => {
       description="You can create your first event type by clicking the button below."
       buttonText="Add Event Type"
       href="/dashboard/new"
+      show-create
     />
-    <div v-else class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+    <div
+      v-else
+      class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 max-w-[1200px] mt-5"
+    >
       <div
         v-for="item in data?.EventType"
         :key="item.id"
@@ -120,11 +129,11 @@ const showConfirm = async (id: string) => {
               </div>
               <div class="ml-5 w-0 flex-1">
                 <dl>
-                  <dt class="text-sm font-medium truncate">
+                  <dt class="text-lg font-medium truncate">
                     {{ item.duration }} Minutes Meeting
                   </dt>
                   <dd>
-                    <div class="text-lg font-medium">
+                    <div class="text-sm font-medium">
                       {{ item.title }}
                     </div>
                   </dd>

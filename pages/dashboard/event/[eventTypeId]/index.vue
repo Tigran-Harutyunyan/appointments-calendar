@@ -5,6 +5,9 @@ import { toast } from "vue-sonner";
 import { type EventPayloadType } from "@/types";
 
 definePageMeta({ layout: "dashboard" });
+useHead({
+  title: "Scheduler | Edit Event",
+});
 
 const isPending = ref(false);
 const route = useRoute();
