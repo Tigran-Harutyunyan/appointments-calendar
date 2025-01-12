@@ -1,10 +1,10 @@
 import { serverSupabaseClient } from "#supabase/server";
 import prisma from "@/lib/db";
+import { nylas } from "@/lib/nylas";
 
 export default defineEventHandler(async (event) => {
-    const { payload } = await readBody(event);
     const client = await serverSupabaseClient(event);
-
+    const { eventId } = await event.context.params;
     const { data } = await client.auth.getUser();
     const userId = data.user?.id;
 
@@ -14,17 +14,25 @@ export default defineEventHandler(async (event) => {
     }
 
     try {
-        const user = await prisma.user.update({
+        const userData = await prisma.user.findUnique({
             where: {
                 id: userId as string,
             },
-            data: {
-                name: payload?.fullName,
-                image: payload?.profileImage,
+            select: {
+                grantEmail: true,
+                grantId: true,
             },
         });
 
-        return user ?? null
+        const data = await nylas.events.destroy({
+            eventId: eventId as string,
+            identifier: userData?.grantId as string,
+            queryParams: {
+                calendarId: userData?.grantEmail as string,
+            },
+        });
+
+        return data;
 
     } catch (error) {
         return createError({

@@ -1,8 +1,8 @@
 import { serverSupabaseClient } from "#supabase/server";
 import prisma from "@/lib/db";
+import { nylas } from "@/lib/nylas";
 
 export default defineEventHandler(async (event) => {
-    const { payload } = await readBody(event);
     const client = await serverSupabaseClient(event);
 
     const { data } = await client.auth.getUser();
@@ -14,17 +14,27 @@ export default defineEventHandler(async (event) => {
     }
 
     try {
-        const user = await prisma.user.update({
+        const userData = await prisma.user.findUnique({
             where: {
-                id: userId as string,
+                id: userId,
             },
-            data: {
-                name: payload?.fullName,
-                image: payload?.profileImage,
+            select: {
+                grantId: true,
+                grantEmail: true,
             },
         });
 
-        return user ?? null
+        if (!userData) {
+            throw new Error("User not found");
+        }
+        const data = await nylas.events.list({
+            identifier: userData?.grantId as string,
+            queryParams: {
+                calendarId: userData?.grantEmail as string,
+            },
+        });
+
+        return data;
 
     } catch (error) {
         return createError({

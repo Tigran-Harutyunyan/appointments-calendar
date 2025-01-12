@@ -8,8 +8,6 @@ export default defineEventHandler(async (event) => {
     const userId = data.user?.id;
     const { isChecked } = await readBody(event);
 
-    console.log(isChecked)
-
     if (!userId) {
         setResponseStatus(event, 401)
         return;

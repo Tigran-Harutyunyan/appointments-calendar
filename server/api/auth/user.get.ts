@@ -1,10 +1,8 @@
 import { serverSupabaseClient } from "#supabase/server";
 import prisma from "@/lib/db";
 
-export default defineEventHandler(async (event) => {
-    const { payload } = await readBody(event);
+export default eventHandler(async (event) => {
     const client = await serverSupabaseClient(event);
-
     const { data } = await client.auth.getUser();
     const userId = data.user?.id;
 
@@ -14,17 +12,19 @@ export default defineEventHandler(async (event) => {
     }
 
     try {
-        const user = await prisma.user.update({
+        const data = await prisma.user.findUnique({
             where: {
-                id: userId as string,
+                id: userId,
             },
-            data: {
-                name: payload?.fullName,
-                image: payload?.profileImage,
+            select: {
+                username: true,
+                grantId: true,
+                image: true
             },
         });
 
-        return user ?? null
+
+        return data ? data : null
 
     } catch (error) {
         return createError({
