@@ -13,7 +13,7 @@ useHead({
     >
       <div class="relative flex items-center flex-col space-y-8">
         <div class="mb-12 mx-auto">
-          <img src="../assets/images/404.svg" class="mx-auto w-[300px]" />
+          <img src="/404.svg" class="mx-auto w-[300px]" />
         </div>
         <NuxtLink to="/" class="mx-auto">
           <Button>GO HOME</Button>
