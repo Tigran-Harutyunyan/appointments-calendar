@@ -17,6 +17,7 @@ const { data } = useFetch<profileType>("/api/profile");
     :email="data?.email"
     :fullName="data?.name"
     :profileImage="data?.image || ''"
+    class="md:max-w-lg"
   />
   <Loader v-else />
 </template>
