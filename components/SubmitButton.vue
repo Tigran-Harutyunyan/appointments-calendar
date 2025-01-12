@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { Loader2 } from "lucide-vue-next";
 
-interface iAppProps {
+interface SubmitButtonProps {
   text: string;
   variant?:
     | "default"
@@ -17,9 +17,12 @@ interface iAppProps {
 
   className?: string;
   pending?: boolean;
+  type?: "submit" | "button";
 }
 
-defineProps<iAppProps>();
+withDefaults(defineProps<SubmitButtonProps>(), {
+  type: "submit",
+});
 </script>
 
 <template>
@@ -28,7 +31,7 @@ defineProps<iAppProps>();
     disabled
     variant="outline"
     :class="cn('w-fit', className)"
-    type="submit"
+    :type="type"
   >
     <Loader2 class="size-4 mr-2 animate-spin" /> Please wait
   </Button>
