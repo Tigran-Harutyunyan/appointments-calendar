@@ -13,7 +13,7 @@ import TestimonialsIcon from "@/components/icons/TestimonialsIcon.vue";
           <TestimonialsIcon />
 
           <span class="relative z-10">
-            Wow Calendar is the best platform i have ever used. Definitely
+            Scheduler is the best platform i have ever used. Definitely
             Recommend it to you guys, try it out!
           </span>
         </p>

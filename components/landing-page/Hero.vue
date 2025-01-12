@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import HeroIcon from "@/components/icons/HeroIcon.vue";
+import AuthModal from "@/components/modals/AuthModal.vue";
 </script>
 
 <template>
@@ -9,7 +10,7 @@ import HeroIcon from "@/components/icons/HeroIcon.vue";
         <span
           class="text-sm text-primary font-medium tracking-tight bg-primary/10 px-4 py-2 rounded-full"
         >
-          Introducing Calendar 1.0
+          Introducing Scheduler
         </span>
 
         <h1
@@ -20,9 +21,12 @@ import HeroIcon from "@/components/icons/HeroIcon.vue";
         </h1>
 
         <p class="max-w-xl mx-auto mt-4 lg:text-lg text-primblackary">
-          Scheduling a meeting can be a pain. But we at Calendar make it easy
-          for your clients to schedule meetings with you.
+          Scheduling a meeting can be a pain. But with at Scheduler it easy for
+          your clients to schedule meetings with you.
         </p>
+        <div class="mt-5 mb-12">
+          <AuthModal />
+        </div>
       </div>
 
       <div class="relative items-center w-full py-12 mx-auto mt-12">

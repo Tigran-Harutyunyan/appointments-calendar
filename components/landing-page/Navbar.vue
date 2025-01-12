@@ -14,7 +14,7 @@ import ThemeToggle from "@/components/ThemeToggle.vue";
         <img src="/logo.png" class="size-10" alt="Logo" />
 
         <h4 class="text-3xl font-semibold">
-          Cal<span class="text-primary">endar</span>
+          Sche<span class="text-primary">duler</span>
         </h4>
       </NuxtLink>
       <div class="md:hidden">
