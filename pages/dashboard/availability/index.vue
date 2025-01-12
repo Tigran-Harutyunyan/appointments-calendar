@@ -1,5 +1,6 @@
 <script setup lang="ts">
 definePageMeta({ layout: "dashboard" });
+
 import { toast } from "vue-sonner";
 import { times } from "@/lib/times";
 import {
@@ -21,100 +22,90 @@ import {
 import { Switch } from "@/components/ui/switch";
 import { type ScheduleItem } from "@/types";
 
-const { data } = useFetch<ScheduleItem[]>("/api/availability");
+const { data } = await useFetch<ScheduleItem[]>("/api/availability");
 const isPending = ref(false);
-const localAvailability = ref<ScheduleItem[]>();
+const localAvailability = ref<ScheduleItem[]>(data.value ?? []);
 
 const TIME_KEYS = {
   FROM_TIME: "fromTime",
   TILL_TIME: "tillTime",
-};
+} as const;
 
 type TimeKey = (typeof TIME_KEYS)[keyof typeof TIME_KEYS];
 
-const updateAvailabilityAction = async () => {
+const TOAST_MESSAGES = {
+  SUCCESS: "Availability is updated successfully.",
+  ERROR: "Failed to update availability. Please try again.",
+};
+
+const updateAvailability = async () => {
   if (!localAvailability.value) return;
   isPending.value = true;
 
-  const availabilityData = localAvailability.value.map((item) => {
-    const { id, isActive, fromTime, tillTime } = item;
-    return {
+  const availabilityData = localAvailability.value.map(
+    ({ id, isActive, fromTime, tillTime }) => ({
       id,
       isActive,
       fromTime,
       tillTime,
-    };
-  });
+    })
+  );
 
   try {
     const response = await $fetch("/api/availability", {
       method: "POST",
-      body: {
-        availabilityData,
-      },
+      body: { availabilityData },
     });
-    if (response && "status" in response && response.status === "success") {
-      toast.success("Availbility is updated");
+
+    if (response?.status === "success") {
+      toast.success(TOAST_MESSAGES.SUCCESS);
+    } else {
+      throw new Error();
     }
-  } catch (error) {
-    toast.error("Error updateing availbility");
+  } catch {
+    toast.error(TOAST_MESSAGES.ERROR);
   } finally {
     isPending.value = false;
   }
 };
 
-const initLocalAvailability = () => {
-  if (!localAvailability.value && data.value) {
-    localAvailability.value = [...data.value];
-  }
-};
-
 const handleDayUpdate = (id: string, isActive: boolean) => {
-  initLocalAvailability();
-
-  const filtered = localAvailability.value?.find((item) => item.id === id);
-  if (filtered && "isActive" in filtered) filtered.isActive = isActive;
+  const item = localAvailability.value.find((item) => item.id === id);
+  if (item) item.isActive = isActive;
 };
 
 const handleTimeChange = (id: string, key: TimeKey, time: string) => {
-  initLocalAvailability();
+  const item = localAvailability.value.find((item) => item.id === id);
+  if (!item) throw new Error("Could not find the schedule item.");
 
-  const filtered = localAvailability.value?.find((item) => item.id === id);
-
-  if (!filtered) throw new Error("Soemthing went wrong");
-
-  if (key === TIME_KEYS.FROM_TIME && TIME_KEYS.FROM_TIME in filtered)
-    filtered.fromTime = time;
-
-  if (key === TIME_KEYS.TILL_TIME && TIME_KEYS.TILL_TIME in filtered)
-    filtered.tillTime = time;
+  item[key] = time;
 };
 </script>
 
 <template>
-  <Card v-if="data">
+  <Card v-if="data" class="md:max-w-lg">
     <CardHeader>
       <CardTitle>Availability</CardTitle>
       <CardDescription>
-        In this section you can manage your availability.
+        In this section, you can manage your availability.
       </CardDescription>
     </CardHeader>
-    <form @submit.prevent="updateAvailabilityAction">
+    <form @submit.prevent="updateAvailability">
       <CardContent class="flex flex-col gap-y-4">
         <div
-          class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 items-center gap-4"
-          v-for="item in data"
+          v-for="item in localAvailability"
           :key="item.id"
+          class="grid grid-cols-2 mobile:grid-cols-4 items-center gap-4"
         >
-          <div class="flex items-center gap-x-3">
+          <div class="flex items-center gap-x-3 col-span-2">
             <Switch
-              :defaultChecked="item.isActive"
+              v-model:checked="item.isActive"
               @update:checked="(isActive) => handleDayUpdate(item.id, isActive)"
             />
             <p>{{ item.day }}</p>
           </div>
           <Select
-            :defaultValue="item.fromTime"
+            v-model="item.fromTime"
             @update:modelValue="
               (time) => handleTimeChange(item.id, TIME_KEYS.FROM_TIME, time)
             "
@@ -135,8 +126,7 @@ const handleTimeChange = (id: string, key: TimeKey, time: string) => {
             </SelectContent>
           </Select>
           <Select
-            :name="`tillTime-${item.id}`"
-            :defaultValue="item.tillTime"
+            v-model="item.tillTime"
             @update:modelValue="
               (time) => handleTimeChange(item.id, TIME_KEYS.TILL_TIME, time)
             "
@@ -163,5 +153,4 @@ const handleTimeChange = (id: string, key: TimeKey, time: string) => {
       </CardFooter>
     </form>
   </Card>
-  <Loader v-else />
 </template>
