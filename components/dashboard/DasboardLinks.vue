@@ -1,33 +1,6 @@
 <script setup lang="ts">
 import { cn } from "@/lib/utils";
-import { CalendarCheck, HomeIcon, Settings, Users2 } from "lucide-vue-next";
-
-const dashboardLinks = [
-  {
-    id: 0,
-    name: "Event Types",
-    href: "/dashboard",
-    icon: HomeIcon,
-  },
-  {
-    id: 1,
-    name: "Meetings",
-    href: "/dashboard/meetings",
-    icon: Users2,
-  },
-  {
-    id: 2,
-    name: "Availablity",
-    href: "/dashboard/availability",
-    icon: CalendarCheck,
-  },
-  {
-    id: 3,
-    name: "Settings",
-    href: "/dashboard/settings",
-    icon: Settings,
-  },
-];
+import { dashboardLinks } from "@/data/sidebarLinks";
 
 const pathname = computed(() => useRoute().fullPath);
 </script>
