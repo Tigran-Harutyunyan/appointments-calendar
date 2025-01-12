@@ -30,7 +30,9 @@ const onSubmit = async (values: EventPayloadType) => {
       toast.error(errorMessage);
     }
   } catch (error) {
-    toast.error(error);
+    toast.error(
+      error instanceof Error ? error.message : "An unexpected error occurred."
+    );
   } finally {
     isPending.value = false;
   }

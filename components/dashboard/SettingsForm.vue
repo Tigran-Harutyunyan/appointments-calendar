@@ -69,7 +69,9 @@ const onSubmit = async () => {
       updateProfile();
     }
   } catch (error) {
-    toast.error("Profile updated error");
+    toast.error(
+      error instanceof Error ? error.message : "An unexpected error occurred."
+    );
   } finally {
     isPending.value = false;
   }

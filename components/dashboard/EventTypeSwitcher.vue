@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { updateEventTypeStatusAction } from "@/app/actions";
 import { Switch } from "@/components/ui/switch";
 import { toast } from "vue-sonner";
 
@@ -33,7 +32,9 @@ const onSwitch = async (isChecked: boolean) => {
       toast.error(errorMessage);
     }
   } catch (error) {
-    toast.error(error);
+    toast.error(
+      error instanceof Error ? error.message : "An unexpected error occurred."
+    );
   } finally {
     isPending.value = false;
   }
