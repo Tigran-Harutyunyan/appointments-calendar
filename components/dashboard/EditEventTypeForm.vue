@@ -1,6 +1,7 @@
 <script setup lang="ts">
 definePageMeta({ layout: "dashboard" });
-import { ref } from "vue";
+
+import { ref, computed, onMounted } from "vue";
 import { durations } from "@/lib/durations";
 import { platforms } from "@/lib/platforms";
 import { eventTypeSchema } from "@/lib/zodSchemas";
@@ -21,7 +22,6 @@ import {
   SelectContent,
   SelectGroup,
   SelectItem,
-  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
@@ -56,19 +56,20 @@ type EmitType = {
   ): void;
 };
 
-const props = defineProps<EditEventTypeFormProps>();
-
+const props = defineProps<Readonly<EditEventTypeFormProps>>();
 const emit = defineEmits<EmitType>();
 
 type ButtonId = (typeof platforms)[number]["id"];
 const activePlatformId = ref<ButtonId>("google_meet");
-const activePlatformIndex = computed(() =>
-  platforms.findIndex((item) => item.id === activePlatformId.value)
-);
+
+const activePlatformIndex = computed(() => {
+  return platforms.findIndex((item) => item.id === activePlatformId.value);
+});
 
 const togglePlatform = (buttonId: ButtonId) => {
   activePlatformId.value = buttonId;
-  setFieldValue("videoCallSoftware", platforms[activePlatformIndex.value].text);
+  const selectedPlatform = platforms[activePlatformIndex.value]?.text || "";
+  setFieldValue("videoCallSoftware", selectedPlatform);
 };
 
 const { validate, values, setFieldValue } = useForm({
@@ -82,15 +83,17 @@ const { validate, values, setFieldValue } = useForm({
 });
 
 const onSubmit = async () => {
-  if (!validate()) return;
+  const isValid = await validate();
+  if (!isValid) return;
   emit("submit", values);
 };
 
 onMounted(() => {
   if (props.callProvider) {
-    activePlatformId.value = platforms.find(
-      (item) => item.text === props.callProvider
-    )?.id;
+    const platform = platforms.find((item) => item.text === props.callProvider);
+    if (platform) {
+      activePlatformId.value = platform.id;
+    }
   }
 
   if (props.duration) {
@@ -100,7 +103,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="h-full w-full flex-1 flex flex-col items-center justify-center">
+  <div class="w-full flex-1 flex flex-col md:max-w-lg">
     <Card>
       <CardHeader>
         <CardTitle
