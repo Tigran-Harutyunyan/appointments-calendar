@@ -1,49 +1,52 @@
 <script setup lang="ts">
+import { ref } from "vue";
+import { useRoute } from "vue-router";
 import { toast } from "vue-sonner";
 import { type EventPayloadType } from "@/types";
-const isPending = ref(false);
-const route = useRoute();
 
 definePageMeta({ layout: "dashboard" });
 
-type EventType = {
+const isPending = ref(false);
+const route = useRoute();
+
+interface EventType {
   id: string;
   title: string;
   description: string;
   duration: number;
   url: string;
   videoCallSoftware: string;
-};
+}
 
+// Fetch event data
 const { data: event, status } = useFetch<EventType>(
   `/api/events/${route.params.eventTypeId}`
 );
 
+// Handle form submission
 const onSubmit = async (values: EventPayloadType) => {
   isPending.value = true;
 
   try {
-    const response = await $fetch(`/api/events/${route.params.eventTypeId}`, {
+    const response = await $fetch<
+      EventType | { error: Record<string, string> }
+    >(`/api/events/${route.params.eventTypeId}`, {
       method: "PUT",
-      body: {
-        payload: values,
-      },
+      body: { payload: values },
     });
 
-    if (response && "id" in response) {
-      toast.success("Event updated");
-      navigateTo("/dashboard");
+    if ("id" in response) {
+      toast.success("Event updated successfully!");
     }
 
-    const responseError =
-      response && "error" in response ? response.error : null;
-
-    if (responseError) {
-      const errorMessage = Object.values(responseError).join(",");
-      toast.error(errorMessage);
+    if ("error" in response) {
+      const errorMessage = Object.values(response.error).join(", ");
+      toast.error(`Update failed: ${errorMessage}`);
     }
-  } catch (error) {
-    toast.error(error);
+  } catch (error: unknown) {
+    toast.error(
+      error instanceof Error ? error.message : "An unexpected error occurred."
+    );
   } finally {
     isPending.value = false;
   }
@@ -51,8 +54,10 @@ const onSubmit = async (values: EventPayloadType) => {
 </script>
 
 <template>
+  <Loader v-if="status === 'pending'" />
+
   <DashboardEditEventTypeForm
-    v-if="event && status === 'success'"
+    v-else-if="event && status === 'success'"
     :id="event.id"
     :title="event.title"
     :description="event.description"
@@ -62,5 +67,7 @@ const onSubmit = async (values: EventPayloadType) => {
     :is-pending="isPending"
     @submit="onSubmit"
   />
-  <Loader v-if="status === 'pending'" />
+
+  <!-- Fallback for missing event data -->
+  <p v-else class="text-muted">Event data could not be loaded.</p>
 </template>
