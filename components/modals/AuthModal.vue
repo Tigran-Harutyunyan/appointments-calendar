@@ -38,7 +38,7 @@ const handleLogin = async (provider: "github" | "google") => {
           </template>
           Sign in with Google
         </AuthButton>
-        <AuthButton @click="handleLogin('github')">
+        <AuthButton v-if="false" @click="handleLogin('github')">
           <template #icon>
             <NuxtImg
               src="/github.svg"
