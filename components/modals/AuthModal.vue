@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import GoogleAuthButton from "../GoogleAuthButton.vue";
-import GitHubAuthButton from "../GitHubAuthButton.vue";
+import AuthButton from "../AuthButton.vue";
 import { toast } from "vue-sonner";
 
 const supabaseClient = useSupabaseClient();
 
 const handleLogin = async (provider: "github" | "google") => {
+  debugger;
   try {
     await supabaseClient.auth.signInWithOAuth({
       provider,
@@ -28,12 +28,26 @@ const handleLogin = async (provider: "github" | "google") => {
       <DialogHeader class="flex-row justify-center items-center gap-x-2">
         <img src="/logo.png" class="size-10" alt="Logo" />
         <h4 class="text-3xl font-semibold">
-          Cal<span class="text-primary">endar</span>
+          Sched<span class="text-primary">uler</span>
         </h4>
       </DialogHeader>
       <div class="flex flex-col gap-3 mt-5">
-        <GoogleAuthButton @click="handleLogin('google')" />
-        <GitHubAuthButton @click="handleLogin('github')" />
+        <AuthButton @click="handleLogin('google')">
+          <template #icon>
+            <NuxtImg src="/google.svg" class="size-4 mr-2" alt="Google Logo" />
+          </template>
+          Sign in with Google
+        </AuthButton>
+        <AuthButton @click="handleLogin('github')">
+          <template #icon>
+            <NuxtImg
+              src="/github.svg"
+              class="size-4 mr-2 dark:invert"
+              alt="Google Logo"
+            />
+          </template>
+          Sign in with GitHub
+        </AuthButton>
       </div>
     </DialogContent>
   </Dialog>

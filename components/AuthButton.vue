@@ -2,7 +2,10 @@
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-vue-next";
 
-const pending = false;
+interface AuthButtonProps {
+  pending?: boolean;
+}
+defineProps<AuthButtonProps>();
 </script>
 
 <template>
@@ -11,7 +14,7 @@ const pending = false;
   </Button>
 
   <Button v-else variant="outline" class="w-full">
-    <NuxtImg src="/google.svg" class="size-4 mr-2" alt="Google Logo" />
-    Sign in with Google
+    <slot name="icon" />
+    <slot />
   </Button>
 </template>
