@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { Button } from "@/components/ui/button";
+import AuthModal from "@/components/modals/AuthModal.vue";
 </script>
 
 <template>
@@ -17,7 +18,7 @@ import { Button } from "@/components/ui/button";
         clients.
       </h3>
       <div class="mt-8 flex items-center justify-center gap-x-6">
-        <Button>Get Started Today</Button>
+        <AuthModal />
       </div>
     </div>
   </div>
