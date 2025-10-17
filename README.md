@@ -16,8 +16,8 @@ Features:
 - Create, Edit, delete, preview Event Types.
 - Create meeetings based on availibility and event type.
 
-<img width="1182" src="/screens/1.jpg">
+<img width="1182" src="./public/screens/1.jpg">
 
-<img width="1182" src="/screens/2.jpg">
+<img width="1182" src="./public/screens/2.jpg">
 
-<img width="1182" src="/screens/3.jpg">
+<img width="1182" src="./public/screens/3.jpg">
