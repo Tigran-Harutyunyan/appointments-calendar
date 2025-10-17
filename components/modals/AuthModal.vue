@@ -5,11 +5,12 @@ import { toast } from "vue-sonner";
 const supabaseClient = useSupabaseClient();
 
 const handleLogin = async (provider: "github" | "google") => {
-  debugger;
   try {
     await supabaseClient.auth.signInWithOAuth({
       provider,
-      options: {},
+      options: {
+        redirectTo: `${window.location.origin}/`,
+      },
     });
   } catch (error) {
     toast.error(
