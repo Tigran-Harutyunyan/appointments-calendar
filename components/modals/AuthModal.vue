@@ -8,9 +8,7 @@ const handleLogin = async (provider: "github" | "google") => {
   try {
     await supabaseClient.auth.signInWithOAuth({
       provider,
-      options: {
-        redirectTo: `${window.location.origin}/`,
-      },
+      options: {},
     });
   } catch (error) {
     toast.error(
