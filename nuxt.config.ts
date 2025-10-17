@@ -21,8 +21,8 @@ export default defineNuxtConfig({
     url: process.env.SUPABASE_URL,
     key: process.env.SUPABASE_KEY,
     redirectOptions: {
-      login: process.env.NUXT_PUBLIC_APP_URL || "/",
-      callback: process.env.NUXT_PUBLIC_APP_URL || "/",
+      login: "/",
+      callback: "/",
       include: undefined,
       exclude: [],
       cookieRedirect: true,
