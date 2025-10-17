@@ -8,7 +8,9 @@ const handleLogin = async (provider: "github" | "google") => {
   try {
     await supabaseClient.auth.signInWithOAuth({
       provider,
-      options: {},
+      options: {
+        redirectTo: process.env.NUXT_PUBLIC_APP_URL,
+      },
     });
   } catch (error) {
     toast.error(
